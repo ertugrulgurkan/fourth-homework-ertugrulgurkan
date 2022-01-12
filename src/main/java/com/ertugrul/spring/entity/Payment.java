@@ -13,7 +13,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Payment {
+public class Payment implements BaseEntity{
     @SequenceGenerator(name = "generator", sequenceName = "PAYMENT_ID_SEQ")
     @Id
     @GeneratedValue(generator = "generator")
