@@ -16,4 +16,8 @@ public class DebtEntityService extends BaseEntityService<Debt, DebtRepository> {
         return getRepository().findAllDebtByExpiryDateBetween(startDate, endDate);
     }
 
+    public Optional<List<Debt>> findAllDebtByUserId(Long userId) {
+        return getRepository().findAllDebtByUserIdAndTotalAmountIsGreaterThan(userId, (double) 0);
+    }
+
 }

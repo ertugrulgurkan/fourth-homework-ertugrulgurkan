@@ -12,4 +12,7 @@ import java.util.Optional;
 public interface DebtRepository extends JpaRepository<Debt, Long> {
 
     Optional<List<Debt>> findAllDebtByExpiryDateBetween(Date startDate, Date endDate);
+
+    Optional<List<Debt>> findAllDebtByUserIdAndTotalAmountIsGreaterThan(Long userId, Double totalAmount);
+
 }

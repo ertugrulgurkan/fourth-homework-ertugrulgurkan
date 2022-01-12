@@ -21,13 +21,31 @@ public class DebtService {
     private final DebtEntityService debtEntityService;
     private final UserEntityService userEntityService;
 
+    //e. Bir kullanıcının tüm borçları listenelebilmelidir. (Borç tutarı sıfırdan büyük olanlar)
+    public List<DebtDto> listAllUserDebt(Long userId){
+        List<DebtDto> debtList;
+        Optional<User> user = userEntityService.findById(userId);
+        if (user.isPresent()){
+            Optional<List<Debt>> allDebtByUserId = debtEntityService.findAllDebtByUserId(userId);
+            if (allDebtByUserId.isPresent())
+                debtList = DebtMapper.INSTANCE.convertAllDebtDtoToDebt(allDebtByUserId.get());
+            else
+                throw new DebtNotFoundException("Debt not found");
+        }
+        else
+            throw new UserNotFoundException("User Id not found");
+
+        return debtList;
+    }
+
+    //a. Borç kaydeden, (sadece normal borçlar)
     public DebtDto save(DebtDto debtDto) {
         Debt debt = DebtMapper.INSTANCE.convertDebtDtoToDebt(debtDto);
         DebtDto savedDto;
 
-        Optional<User> byId = userEntityService.findById(debtDto.getId());
+        Optional<User> user = userEntityService.findById(debtDto.getId());
 
-        if (byId.isPresent()){
+        if (user.isPresent()){
             Debt savedDebt = debtEntityService.save(debt);
             savedDto = DebtMapper.INSTANCE.convertDebtDtoToDebt(savedDebt);
         }
@@ -36,6 +54,7 @@ public class DebtService {
         return savedDto;
     }
 
+    //d. Belirtilen tarihler arasında oluşturulan borçlar listelenebilmelidir.
     public List<DebtDto> listDebtsByDateRange(Date startDate, Date endDate){
         Optional<List<Debt>> debtListOptional = debtEntityService.findAllDebtByExpiryDateBetween(startDate, endDate);
 
