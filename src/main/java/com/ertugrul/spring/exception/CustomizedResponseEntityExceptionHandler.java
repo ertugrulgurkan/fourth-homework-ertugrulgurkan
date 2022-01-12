@@ -17,26 +17,24 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest webRequest) {
-
-        Date errorDate = new Date();
-        String message = ex.getMessage();
-        String description = webRequest.getDescription(false);
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse(errorDate, message, description);
-
-        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return getErrorResponse(ex, webRequest, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
-    public final ResponseEntity<Object> handleAllExceptions(UserNotFoundException ex, WebRequest webRequest) {
+    public final ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest webRequest) {
+        return getErrorResponse(ex, webRequest, HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleDebtNotFoundException(DebtNotFoundException ex, WebRequest webRequest) {
+        return getErrorResponse(ex, webRequest, HttpStatus.NOT_FOUND);
+    }
+
+    private ResponseEntity<Object> getErrorResponse(Exception ex, WebRequest webRequest, HttpStatus notFound) {
         Date errorDate = new Date();
-        String message = ex.getMessage();
         String description = webRequest.getDescription(false);
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse(errorDate, message, description);
-
-        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+        ExceptionResponse exceptionResponse = new ExceptionResponse(errorDate, ex.getMessage(), description);
+        return new ResponseEntity<>(exceptionResponse, notFound);
     }
 
 }
