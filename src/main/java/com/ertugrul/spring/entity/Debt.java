@@ -1,5 +1,6 @@
 package com.ertugrul.spring.entity;
 
+import com.ertugrul.spring.enums.DebtType;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Builder
 public class Debt implements BaseEntity {
     @SequenceGenerator(name = "generator", sequenceName = "DEBT_ID_SEQ")
     @Id
@@ -38,6 +40,4 @@ public class Debt implements BaseEntity {
         return getClass().hashCode();
     }
 
-    public enum DebtType {
-    }
 }
