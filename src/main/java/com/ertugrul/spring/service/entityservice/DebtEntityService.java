@@ -1,6 +1,7 @@
 package com.ertugrul.spring.service.entityservice;
 
 import com.ertugrul.spring.entity.Debt;
+import com.ertugrul.spring.enums.DebtType;
 import com.ertugrul.spring.repository.DebtRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,10 @@ public class DebtEntityService extends BaseEntityService<Debt, DebtRepository> {
 
     public Optional<List<Debt>> findAllOverdueDebtByUserId(Long userId) {
         return getRepository().findAllDebtByUserIdAndRemainingAmountIsGreaterThanAndExpiryDateIsLessThan(userId, (double) 0, new Date(System.currentTimeMillis()));
+    }
+
+    public Optional<List<Debt>> findAllDebtByUserIdAndType(Long userId) {
+        return getRepository().findAllDebtByUserIdAndType(userId, DebtType.LATE_FEE);
     }
 
 }

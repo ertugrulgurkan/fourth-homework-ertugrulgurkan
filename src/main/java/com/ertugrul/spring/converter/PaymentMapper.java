@@ -16,7 +16,7 @@ public interface PaymentMapper {
 
     Payment convertPaymentDtoToPayment(PaymentDto paymentDto);
 
-    List<PaymentDto> convertAllPaymentDtoToPayment(List<Payment> paymentList);
+    List<PaymentDto> convertAllPaymentToPaymentDto(List<Payment> paymentList);
 
-    List<Payment> convertAllPaymentToPaymentDto(List<PaymentDto> paymentDtoList);
+    List<Payment> convertAllPaymentDtoToPayment(List<PaymentDto> paymentDtoList);
 }

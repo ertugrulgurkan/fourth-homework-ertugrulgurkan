@@ -15,7 +15,7 @@ public interface DebtMapper {
 
     Debt convertDebtDtoToDebt(DebtDto debtDto);
 
-    List<DebtDto> convertAllDebtDtoToDebt(List<Debt> debtList);
+    List<DebtDto> convertAllDebtToDebtDto(List<Debt> debtList);
 
-    List<Debt> convertAllDebtToDebtDto(List<DebtDto> debtDtoList);
+    List<Debt> convertAllDebtDtoToDebt(List<DebtDto> debtDtoList);
 }

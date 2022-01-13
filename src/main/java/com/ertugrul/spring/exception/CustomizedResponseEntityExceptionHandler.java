@@ -26,6 +26,11 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     }
 
     @ExceptionHandler
+    public final ResponseEntity<Object> handlePaymentNotFoundException(PaymentNotFoundException ex, WebRequest webRequest) {
+        return getErrorResponse(ex, webRequest, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
     public final ResponseEntity<Object> handleDebtNotFoundException(DebtNotFoundException ex, WebRequest webRequest) {
         return getErrorResponse(ex, webRequest, HttpStatus.NOT_FOUND);
     }

@@ -31,7 +31,7 @@ public class DebtService {
 
         List<Debt> debtList = debtEntityService.findAll();
 
-        List<DebtDto> debtDtoList = DebtMapper.INSTANCE.convertAllDebtDtoToDebt(debtList);
+        List<DebtDto> debtDtoList = DebtMapper.INSTANCE.convertAllDebtToDebtDto(debtList);
 
         return debtDtoList;
     }
@@ -86,19 +86,19 @@ public class DebtService {
         Optional<List<Debt>> debtListOptional = debtEntityService.findAllDebtByExpiryDateBetween(startDate, endDate);
 
         if (debtListOptional.isPresent())
-            return DebtMapper.INSTANCE.convertAllDebtDtoToDebt(debtListOptional.get());
+            return DebtMapper.INSTANCE.convertAllDebtToDebtDto(debtListOptional.get());
         else
             throw new DebtNotFoundException("No Debt has been found.");
     }
 
     //e. Bir kullanıcının tüm borçları listenelebilmelidir. (Borç tutarı sıfırdan büyük olanlar)
-    public List<DebtDto> listAllUserDebt(Long userId) {
+    public List<DebtDto> listAllUserDebtByUserId(Long userId) {
         List<DebtDto> debtList;
         Optional<User> user = userEntityService.findById(userId);
         if (user.isPresent()) {
             Optional<List<Debt>> allDebtByUserId = debtEntityService.findAllDebtByUserId(userId);
             if (allDebtByUserId.isPresent())
-                debtList = DebtMapper.INSTANCE.convertAllDebtDtoToDebt(allDebtByUserId.get());
+                debtList = DebtMapper.INSTANCE.convertAllDebtToDebtDto(allDebtByUserId.get());
             else
                 throw new DebtNotFoundException("Debt not found");
         } else
@@ -108,13 +108,13 @@ public class DebtService {
     }
 
     //f. Bir kullanıcının vadesi geçmiş borçları listenelebilmelidir. (Borç tutarı sıfırdan büyük olanlar)
-    public List<DebtDto> listAllUserOverdueDebt(Long userId) {
+    public List<DebtDto> listAllUserOverdueDebtByUserId(Long userId) {
         List<DebtDto> debtList;
         Optional<User> user = userEntityService.findById(userId);
         if (user.isPresent()) {
             Optional<List<Debt>> allDebtByUserId = debtEntityService.findAllOverdueDebtByUserId(userId);
             if (allDebtByUserId.isPresent())
-                debtList = DebtMapper.INSTANCE.convertAllDebtDtoToDebt(allDebtByUserId.get());
+                debtList = DebtMapper.INSTANCE.convertAllDebtToDebtDto(allDebtByUserId.get());
             else
                 throw new DebtNotFoundException("Debt not found");
         } else
@@ -123,8 +123,8 @@ public class DebtService {
     }
 
     //h. Bir kullanıcının vadesi geçmiş toplam borç tutarını dönen bir servis olmaldır.
-    public OverdueTotalDebtDto findTotalOverdueDebt(Long userId) {
-        List<DebtDto> debtDtoList = listAllUserOverdueDebt(userId);
+    public OverdueTotalDebtDto findTotalOverdueDebtByUserId(Long userId) {
+        List<DebtDto> debtDtoList = listAllUserOverdueDebtByUserId(userId);
         OverdueTotalDebtDto overdueTotalDebtDto = null;
         if (debtDtoList != null) {
             double totalDebt = debtDtoList.stream().mapToDouble(DebtDto::getTotalAmount).sum();
@@ -135,13 +135,28 @@ public class DebtService {
 
     // i. Bir kullanıcının anlık gecikme zammı tutarını dönen bir servis olmalıdır.
     // (Vadesi geçen borçlara hesaplanan gecikme zamı tutarları toplamı. (Sadece gecikme zammı))
-    public OverdueDebtDto findAllOverdueDebtLateFeeAmount(Long userId) {
+    public OverdueDebtDto findAllOverdueDebtLateFeeAmountByUserId(Long userId) {
         double overDueDebtDto = 0.0;
-        List<DebtDto> debtDtoList = listAllUserOverdueDebt(userId);
+        List<DebtDto> debtDtoList = listAllUserOverdueDebtByUserId(userId);
         for (DebtDto dto : debtDtoList) {
             long days = TimeUnit.DAYS.convert(new Date().getTime() - dto.getExpiryDate().getTime(), TimeUnit.MILLISECONDS);
             overDueDebtDto += dto.getTotalAmount() * days * Constant.getLateFeeRate(dto.getExpiryDate()) / 100;
         }
         return new OverdueDebtDto(userId, overDueDebtDto);
+    }
+
+    //4 - B. Belirtilen tarihler arasında yapılan tahsilatlar listelenebilmelidir
+    public List<DebtDto> findAllLateFeeDebtByUserId(Long userId){
+        List<DebtDto> debtList;
+        Optional<User> user = userEntityService.findById(userId);
+        if (user.isPresent()) {
+            Optional<List<Debt>> allDebtByUserId = debtEntityService.findAllDebtByUserIdAndType(userId);
+            if (allDebtByUserId.isPresent())
+                debtList = DebtMapper.INSTANCE.convertAllDebtToDebtDto(allDebtByUserId.get());
+            else
+                throw new DebtNotFoundException("Debt not found");
+        } else
+            throw new UserNotFoundException("User Id not found");
+        return debtList;
     }
 }
