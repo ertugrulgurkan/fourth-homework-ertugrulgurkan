@@ -13,8 +13,8 @@ public interface DebtRepository extends JpaRepository<Debt, Long> {
 
     Optional<List<Debt>> findAllDebtByExpiryDateBetween(Date startDate, Date endDate);
 
-    Optional<List<Debt>> findAllDebtByUserIdAndTotalAmountIsGreaterThan(Long userId, Double totalAmount);
+    Optional<List<Debt>> findAllDebtByUserIdAndRemainingAmountIsGreaterThan(Long userId, Double totalAmount);
 
-    Optional<List<Debt>> findAllDebtByUserIdAndTotalAmountIsGreaterThanAndAndExpiryDateIsLessThan(Long userId, Double totalAmount,Date expiryDate);
+    Optional<List<Debt>> findAllDebtByUserIdAndRemainingAmountIsGreaterThanAndExpiryDateIsLessThan(Long userId, Double remainingAmount,Date expiryDate);
 
 }

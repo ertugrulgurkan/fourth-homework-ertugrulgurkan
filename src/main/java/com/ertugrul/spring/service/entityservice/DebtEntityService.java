@@ -19,11 +19,11 @@ public class DebtEntityService extends BaseEntityService<Debt, DebtRepository> {
     }
 
     public Optional<List<Debt>> findAllDebtByUserId(Long userId) {
-        return getRepository().findAllDebtByUserIdAndTotalAmountIsGreaterThan(userId, (double) 0);
+        return getRepository().findAllDebtByUserIdAndRemainingAmountIsGreaterThan(userId, (double) 0);
     }
 
     public Optional<List<Debt>> findAllOverdueDebtByUserId(Long userId) {
-        return getRepository().findAllDebtByUserIdAndTotalAmountIsGreaterThanAndAndExpiryDateIsLessThan(userId, (double) 0, new Date(System.currentTimeMillis()));
+        return getRepository().findAllDebtByUserIdAndRemainingAmountIsGreaterThanAndExpiryDateIsLessThan(userId, (double) 0, new Date(System.currentTimeMillis()));
     }
 
 }

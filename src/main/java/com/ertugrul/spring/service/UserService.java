@@ -8,6 +8,7 @@ import com.ertugrul.spring.service.entityservice.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public class UserService {
         return userDto;
     }
 
+    @Transactional
     public UserDto save(UserDto userDto) {
 
         User user = UserMapper.INSTANCE.convertUserDtoToUser(userDto);
@@ -55,6 +57,7 @@ public class UserService {
         return UserMapper.INSTANCE.convertUserDtoToUser(user);
     }
 
+    @Transactional
     public void delete(Long id) {
 
         User user = findUserById(id);

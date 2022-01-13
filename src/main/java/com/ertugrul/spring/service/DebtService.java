@@ -14,6 +14,7 @@ import com.ertugrul.spring.util.Constant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class DebtService {
         return debtDto;
     }
 
+    @Transactional
     public void delete(Long id) {
 
         Debt debt = findDebtById(id);
@@ -64,6 +66,7 @@ public class DebtService {
     }
 
     //a. Borç kaydeden, (sadece normal borçlar)
+    @Transactional
     public DebtDto save(DebtDto debtDto) {
         Debt debt = DebtMapper.INSTANCE.convertDebtDtoToDebt(debtDto);
         DebtDto savedDto;
