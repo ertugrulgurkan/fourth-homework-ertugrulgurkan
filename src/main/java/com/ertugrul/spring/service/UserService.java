@@ -16,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserEntityService userEntityService;
+
     public List<UserDto> findAll() {
 
         List<User> userList = userEntityService.findAll();
@@ -38,7 +39,7 @@ public class UserService {
 
         User user = userEntityService.findByUsername(username);
 
-        if (user == null){
+        if (user == null) {
             throw new RuntimeException("User not found!");
         }
 
@@ -69,7 +70,7 @@ public class UserService {
         Optional<User> optionalUser = userEntityService.findById(id);
 
         User user;
-        if (optionalUser.isPresent()){
+        if (optionalUser.isPresent()) {
             user = optionalUser.get();
         } else {
             throw new UserNotFoundException("User not found!");

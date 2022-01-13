@@ -11,6 +11,7 @@ public class UserEntityService extends BaseEntityService<User, UserRepository> {
     public UserEntityService(UserRepository userRepository) {
         super(userRepository);
     }
+
     public User findByUsername(String username) {
         return getRepository().findByUsername(username);
     }

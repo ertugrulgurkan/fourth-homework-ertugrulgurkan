@@ -1,9 +1,7 @@
 package com.ertugrul.spring.service;
 
 
-import com.ertugrul.spring.converter.DebtMapper;
 import com.ertugrul.spring.converter.PaymentMapper;
-import com.ertugrul.spring.dto.DebtDto;
 import com.ertugrul.spring.dto.PaymentDto;
 import com.ertugrul.spring.entity.Debt;
 import com.ertugrul.spring.entity.Payment;
@@ -16,7 +14,6 @@ import com.ertugrul.spring.service.entityservice.DebtEntityService;
 import com.ertugrul.spring.service.entityservice.PaymentEntityService;
 import com.ertugrul.spring.service.entityservice.UserEntityService;
 import com.ertugrul.spring.util.Constant;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

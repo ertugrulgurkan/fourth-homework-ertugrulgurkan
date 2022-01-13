@@ -16,7 +16,7 @@ public interface DebtRepository extends JpaRepository<Debt, Long> {
 
     Optional<List<Debt>> findAllDebtByUserIdAndRemainingAmountIsGreaterThan(Long userId, Double totalAmount);
 
-    Optional<List<Debt>> findAllDebtByUserIdAndRemainingAmountIsGreaterThanAndExpiryDateIsLessThan(Long userId, Double remainingAmount,Date expiryDate);
+    Optional<List<Debt>> findAllDebtByUserIdAndRemainingAmountIsGreaterThanAndExpiryDateIsLessThan(Long userId, Double remainingAmount, Date expiryDate);
 
     Optional<List<Debt>> findAllDebtByUserIdAndType(Long userId, DebtType debtType);
 

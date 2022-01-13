@@ -1,7 +1,6 @@
 package com.ertugrul.spring.service.entityservice;
 
 import com.ertugrul.spring.entity.Payment;
-import com.ertugrul.spring.entity.Payment;
 import com.ertugrul.spring.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,7 @@ public class PaymentEntityService extends BaseEntityService<Payment, PaymentRepo
     public PaymentEntityService(PaymentRepository paymentRepository) {
         super(paymentRepository);
     }
+
     public Optional<List<Payment>> findAllPaymentByUserId(Long userId) {
         return getRepository().findAllPaymentByUserId(userId);
     }
@@ -22,6 +22,5 @@ public class PaymentEntityService extends BaseEntityService<Payment, PaymentRepo
     public Optional<List<Payment>> findAllPaymentByPaymentDateBetween(Date startDate, Date endDate) {
         return getRepository().findAllPaymentByPaymentDateBetween(startDate, endDate);
     }
-
 
 }

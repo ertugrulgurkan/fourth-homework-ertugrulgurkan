@@ -2,7 +2,8 @@ package com.ertugrul.spring.converter;
 
 import com.ertugrul.spring.dto.DebtDto;
 import com.ertugrul.spring.entity.Debt;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;

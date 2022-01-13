@@ -1,6 +1,9 @@
 package com.ertugrul.spring.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -13,7 +16,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Payment implements BaseEntity{
+public class Payment implements BaseEntity {
     @SequenceGenerator(name = "generator", sequenceName = "PAYMENT_ID_SEQ")
     @Id
     @GeneratedValue(generator = "generator")

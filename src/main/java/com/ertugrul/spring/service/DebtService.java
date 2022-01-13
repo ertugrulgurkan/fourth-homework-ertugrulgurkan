@@ -146,7 +146,7 @@ public class DebtService {
     }
 
     //4 - B. Belirtilen tarihler arasında yapılan tahsilatlar listelenebilmelidir
-    public List<DebtDto> findAllLateFeeDebtByUserId(Long userId){
+    public List<DebtDto> findAllLateFeeDebtByUserId(Long userId) {
         List<DebtDto> debtList;
         Optional<User> user = userEntityService.findById(userId);
         if (user.isPresent()) {
