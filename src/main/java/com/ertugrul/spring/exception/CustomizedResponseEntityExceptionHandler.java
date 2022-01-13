@@ -35,6 +35,11 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return getErrorResponse(ex, webRequest, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleDebtTypeException(DebtTypeException ex, WebRequest webRequest) {
+        return getErrorResponse(ex, webRequest, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Object> getErrorResponse(Exception ex, WebRequest webRequest, HttpStatus notFound) {
         Date errorDate = new Date();
         String description = webRequest.getDescription(false);

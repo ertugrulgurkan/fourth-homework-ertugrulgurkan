@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @CrossOrigin
@@ -29,6 +31,13 @@ public class UserController {
 
         return ResponseEntity.ok(userDto);
     }
+
+    @GetMapping("/")
+    public ResponseEntity<Object> getAllUsers() {
+        List<UserDto> all = userService.findAll();
+        return ResponseEntity.ok(all);
+    }
+
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody UserDto userDto) {

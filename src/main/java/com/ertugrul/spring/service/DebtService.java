@@ -6,7 +6,9 @@ import com.ertugrul.spring.dto.OverdueDebtDto;
 import com.ertugrul.spring.dto.OverdueTotalDebtDto;
 import com.ertugrul.spring.entity.Debt;
 import com.ertugrul.spring.entity.User;
+import com.ertugrul.spring.enums.DebtType;
 import com.ertugrul.spring.exception.DebtNotFoundException;
+import com.ertugrul.spring.exception.DebtTypeException;
 import com.ertugrul.spring.exception.UserNotFoundException;
 import com.ertugrul.spring.service.entityservice.DebtEntityService;
 import com.ertugrul.spring.service.entityservice.UserEntityService;
@@ -38,11 +40,16 @@ public class DebtService {
 
     public DebtDto findById(Long id) {
 
-        Debt debt = findDebtById(id);
+        Optional<Debt> optionalDebt = debtEntityService.findById(id);
 
-        DebtDto debtDto = DebtMapper.INSTANCE.convertDebtDtoToDebt(debt);
+        Debt debt;
+        if (optionalDebt.isPresent()) {
+            debt = optionalDebt.get();
+        } else {
+            throw new DebtNotFoundException("Debt not found!");
+        }
 
-        return debtDto;
+        return DebtMapper.INSTANCE.convertDebtDtoToDebt(debt);
     }
 
     @Transactional
@@ -74,6 +81,8 @@ public class DebtService {
         Optional<User> user = userEntityService.findById(debtDto.getId());
 
         if (user.isPresent()) {
+            if(debt.getType() == DebtType.LATE_FEE)
+                throw new DebtTypeException("Late Fee type cannot be saved.");
             Debt savedDebt = debtEntityService.save(debt);
             savedDto = DebtMapper.INSTANCE.convertDebtDtoToDebt(savedDebt);
         } else

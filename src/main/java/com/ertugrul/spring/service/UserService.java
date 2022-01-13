@@ -21,18 +21,20 @@ public class UserService {
 
         List<User> userList = userEntityService.findAll();
 
-        List<UserDto> userDtoList = UserMapper.INSTANCE.convertAllUserDtoToUser(userList);
-
-        return userDtoList;
+        return UserMapper.INSTANCE.convertAllUserDtoToUser(userList);
     }
 
     public UserDto findById(Long id) {
 
-        User user = findUserById(id);
+        Optional<User> optionalUser = userEntityService.findById(id);
 
-        UserDto userDto = UserMapper.INSTANCE.convertUserDtoToUser(user);
-
-        return userDto;
+        User user;
+        if (optionalUser.isPresent()) {
+            user = optionalUser.get();
+        } else {
+            throw new UserNotFoundException("User not found!");
+        }
+        return UserMapper.INSTANCE.convertUserDtoToUser(user);
     }
 
     public UserDto findByUsername(String username) {
@@ -43,9 +45,7 @@ public class UserService {
             throw new RuntimeException("User not found!");
         }
 
-        UserDto userDto = UserMapper.INSTANCE.convertUserDtoToUser(user);
-
-        return userDto;
+        return UserMapper.INSTANCE.convertUserDtoToUser(user);
     }
 
     @Transactional
