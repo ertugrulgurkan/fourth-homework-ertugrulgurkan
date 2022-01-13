@@ -1,6 +1,6 @@
 package com.ertugrul.spring.dto;
 
-import com.ertugrul.spring.entity.Debt;
+import com.ertugrul.spring.enums.DebtType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,5 +13,5 @@ public class DebtDto implements Serializable {
     private final Double totalAmount;
     private final Double remainingAmount;
     private final Date expiryDate;
-    private final Debt.DebtType type;
+    private final DebtType type;
 }

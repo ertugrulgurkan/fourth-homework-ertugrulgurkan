@@ -13,7 +13,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Debt implements BaseEntity {
     @SequenceGenerator(name = "generator", sequenceName = "DEBT_ID_SEQ")
