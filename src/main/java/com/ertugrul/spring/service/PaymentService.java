@@ -8,6 +8,7 @@ import com.ertugrul.spring.dto.PaymentDto;
 import com.ertugrul.spring.entity.Debt;
 import com.ertugrul.spring.entity.Payment;
 import com.ertugrul.spring.entity.User;
+import com.ertugrul.spring.enums.DebtType;
 import com.ertugrul.spring.exception.DebtNotFoundException;
 import com.ertugrul.spring.exception.PaymentAndDebtAmountNotEqualException;
 import com.ertugrul.spring.exception.PaymentNotFoundException;
@@ -94,7 +95,7 @@ public class PaymentService {
 
         double lateFeeDebt = 0;
 
-        if (debt.getExpiryDate().after(paymentDto.getPaymentDate())) {
+        if (debt.getExpiryDate().before(paymentDto.getPaymentDate())) {
             lateFeeDebt = calculateLateFeeDebt(debt);
             Debt lateFeeD = buildLateFeeDebt(user, lateFeeDebt);
             debtEntityService.save(lateFeeD);
@@ -139,6 +140,7 @@ public class PaymentService {
                 .totalAmount(lateFeeDebt)
                 .remainingAmount(0.0)
                 .userId(user.getId())
+                .type(DebtType.LATE_FEE)
                 .build();
     }
 
@@ -148,7 +150,7 @@ public class PaymentService {
     }
 
     private double calculateLateFeeDebt(Debt debt) {
-        long days = TimeUnit.DAYS.convert(new Date().getTime() - debt.getExpiryDate().getTime(), TimeUnit.MILLISECONDS);
-        return days * Constant.getLateFeeRate(debt.getExpiryDate()) / 100;
+        long months = Constant.monthsBetween(new Date(),debt.getExpiryDate());
+        return Math.round(debt.getTotalAmount() * months * Constant.getLateFeeRate(debt.getExpiryDate()) / 100);
     }
 }
