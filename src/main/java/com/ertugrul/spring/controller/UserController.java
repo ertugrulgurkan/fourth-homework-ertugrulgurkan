@@ -1,7 +1,11 @@
 package com.ertugrul.spring.controller;
 
 
+import com.ertugrul.spring.dto.DebtDto;
+import com.ertugrul.spring.dto.OverdueDebtDto;
+import com.ertugrul.spring.dto.OverdueTotalDebtDto;
 import com.ertugrul.spring.dto.UserDto;
+import com.ertugrul.spring.service.DebtService;
 import com.ertugrul.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final DebtService debtService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable Long id) {
@@ -48,4 +53,42 @@ public class UserController {
     public void delete(@PathVariable Long id) {
         userService.delete(id);
     }
+
+    /*http://localhost:8080/api/v1/users/1/debts*/
+    @GetMapping("/{id}/debts")
+    public ResponseEntity<Object> getAllDebtsByUserId(@PathVariable Long id) {
+        List<DebtDto> debtDtoList = debtService.listAllUserDebtByUserId(id);
+        return ResponseEntity.ok(debtDtoList);
+    }
+
+    /*http://localhost:8080/api/v1/users/1/overdue-debts*/
+    @GetMapping("/{id}/overdue-debts")
+    public ResponseEntity<Object> getAllDOverdueDebtsByUserId(@PathVariable Long id) {
+        List<DebtDto> debtDtoList = debtService.listAllUserOverdueDebtByUserId(id);
+        return ResponseEntity.ok(debtDtoList);
+    }
+
+    /*http://localhost:8080/api/v1/users/1/total-overdue-debt*/
+    @GetMapping("/{id}/total-overdue-debt")
+    public ResponseEntity<Object> getTotalDOverdueDebtByUserId(@PathVariable Long id) {
+        OverdueTotalDebtDto totalOverdueDebtByUserId = debtService.findTotalOverdueDebtByUserId(id);
+        return ResponseEntity.ok(totalOverdueDebtByUserId);
+    }
+
+
+    /*http://localhost:8080/api/v1/users/1/total-late-fee*/
+    @GetMapping("/{id}/total-late-fee")
+    public ResponseEntity<Object> getTotalLateFeeAmountByUserId(@PathVariable Long id) {
+        OverdueDebtDto allOverdueDebtLateFeeAmountByUserId = debtService.findAllOverdueDebtLateFeeAmountByUserId(id);
+        return ResponseEntity.ok(allOverdueDebtLateFeeAmountByUserId);
+    }
+
+
+    /*http://localhost:8080/api/v1/users/1/late-fees*/
+    @GetMapping("/{id}/late-fees")
+    public ResponseEntity<Object> getAllLateFeeDebtsByUserId(@PathVariable Long id) {
+        List<DebtDto> allLateFeeDebtByUserId = debtService.findAllLateFeeDebtByUserId(id);
+        return ResponseEntity.ok(allLateFeeDebtByUserId);
+    }
+
 }

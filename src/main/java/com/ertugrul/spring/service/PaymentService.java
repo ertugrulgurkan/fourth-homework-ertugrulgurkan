@@ -64,6 +64,16 @@ public class PaymentService {
         return savedPaymentDto;
     }
 
+    //b. Belirtilen tarihler arasında yapılan tahsilatlar listelenebilmelidir
+    public List<PaymentDto> listDebtsByDateRange(Date startDate, Date endDate) {
+        Optional<List<Payment>> paymentListOptional = paymentEntityService.findAllPaymentByPaymentDateBetween(startDate, endDate);
+
+        if (paymentListOptional.isPresent())
+            return PaymentMapper.INSTANCE.convertAllPaymentToPaymentDto(paymentListOptional.get());
+        else
+            throw new PaymentNotFoundException("No Payment has been found.");
+    }
+
     //c. Kullanıcının tüm tahsilatları listelenebilmelidir.
     public List<PaymentDto> listAllUserPaymentByUserId(Long userId) {
         List<PaymentDto> paymentList;
@@ -78,16 +88,6 @@ public class PaymentService {
             throw new UserNotFoundException("User Id not found");
 
         return paymentList;
-    }
-
-
-    public List<PaymentDto> listDebtsByDateRange(Date startDate, Date endDate) {
-        Optional<List<Payment>> paymentListOptional = paymentEntityService.findAllPaymentByPaymentDateBetween(startDate, endDate);
-
-        if (paymentListOptional.isPresent())
-            return PaymentMapper.INSTANCE.convertAllPaymentToPaymentDto(paymentListOptional.get());
-        else
-            throw new PaymentNotFoundException("No Payment has been found.");
     }
 
     private Debt buildLateFeeDebt(User user, double lateFeeDebt) {

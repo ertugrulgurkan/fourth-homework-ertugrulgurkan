@@ -33,9 +33,7 @@ public class DebtService {
 
         List<Debt> debtList = debtEntityService.findAll();
 
-        List<DebtDto> debtDtoList = DebtMapper.INSTANCE.convertAllDebtToDebtDto(debtList);
-
-        return debtDtoList;
+        return DebtMapper.INSTANCE.convertAllDebtToDebtDto(debtList);
     }
 
     public DebtDto findById(Long id) {
@@ -154,7 +152,7 @@ public class DebtService {
         return new OverdueDebtDto(userId, overDueDebtDto);
     }
 
-    //4 - B. Belirtilen tarihler arasında yapılan tahsilatlar listelenebilmelidir
+    //4 - d. Kullanıcının ödediği toplam gecikme zammı listelenebilmelidir
     public List<DebtDto> findAllLateFeeDebtByUserId(Long userId) {
         List<DebtDto> debtList;
         Optional<User> user = userEntityService.findById(userId);

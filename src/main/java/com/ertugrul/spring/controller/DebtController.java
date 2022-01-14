@@ -50,12 +50,7 @@ public class DebtController {
         return ResponseEntity.ok(all);
     }
 
-    /*http://localhost:8080/api/v1/debts/users/1*/
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<Object> getAllDebtsByUserId(@PathVariable Long userId) {
-        List<DebtDto> debtDtoList = debtService.listAllUserDebtByUserId(userId);
-        return ResponseEntity.ok(debtDtoList);
-    }
+
 
 
 }
