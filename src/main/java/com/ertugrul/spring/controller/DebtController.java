@@ -50,7 +50,4 @@ public class DebtController {
         return ResponseEntity.ok(all);
     }
 
-
-
-
 }

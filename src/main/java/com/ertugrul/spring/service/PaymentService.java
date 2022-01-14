@@ -1,7 +1,9 @@
 package com.ertugrul.spring.service;
 
 
+import com.ertugrul.spring.converter.DebtMapper;
 import com.ertugrul.spring.converter.PaymentMapper;
+import com.ertugrul.spring.dto.DebtDto;
 import com.ertugrul.spring.dto.PaymentDto;
 import com.ertugrul.spring.entity.Debt;
 import com.ertugrul.spring.entity.Payment;
@@ -31,9 +33,50 @@ public class PaymentService {
     private final PaymentEntityService paymentEntityService;
     private final DebtEntityService debtEntityService;
 
+    public List<PaymentDto> findAll() {
+
+        List<Payment> paymentList = paymentEntityService.findAll();
+
+        return PaymentMapper.INSTANCE.convertAllPaymentToPaymentDto(paymentList);
+    }
+
+    public PaymentDto findById(Long id) {
+
+        Optional<Payment> optionalPayment = paymentEntityService.findById(id);
+
+        Payment payment;
+        if (optionalPayment.isPresent()) {
+            payment = optionalPayment.get();
+        } else {
+            throw new PaymentNotFoundException("Payment not found!");
+        }
+
+        return PaymentMapper.INSTANCE.convertPaymentDtoToPayment(payment);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+
+        Payment payment = findPaymentById(id);
+
+        paymentEntityService.delete(payment);
+    }
+
+    private Payment findPaymentById(Long id) {
+        Optional<Payment> optionalPayment = paymentEntityService.findById(id);
+
+        Payment payment;
+        if (optionalPayment.isPresent()) {
+            payment = optionalPayment.get();
+        } else {
+            throw new PaymentNotFoundException("Payment not found!");
+        }
+        return payment;
+    }
+
     //a. Tahsilat yapan operasyon
     @Transactional
-    public PaymentDto savePayment(PaymentDto paymentDto) {
+    public PaymentDto save(PaymentDto paymentDto) {
         Optional<User> userOptional = userEntityService.findById(paymentDto.getUserId());
         if (userOptional.isEmpty())
             throw new UserNotFoundException("User not found.");
