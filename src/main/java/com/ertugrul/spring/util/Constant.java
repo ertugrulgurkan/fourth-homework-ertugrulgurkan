@@ -14,15 +14,20 @@ public class Constant {
         }
     }
 
-    public static int monthsBetween(Date d1, Date d2) {
-        if (d2 == null || d1 == null) {
-            return -1;
+    public static double calculateLateFee(double amount, Date expirationDate) {
+        double totalLateFee = 0.0;
+        Calendar cStart = Calendar.getInstance();
+        cStart.setTime(expirationDate);
+        Calendar cEnd = Calendar.getInstance();
+        cEnd.setTime(new Date());
+
+        while (cStart.before(cEnd)) {
+            double lateFee = amount * getLateFeeRate(expirationDate) / 100 ;
+            if (lateFee < 1.0)
+                lateFee = 1.0;
+            totalLateFee += lateFee;
+            cStart.add(Calendar.DAY_OF_MONTH, 1);
         }
-        Calendar m_calendar = Calendar.getInstance();
-        m_calendar.setTime(d1);
-        int nMonth1 = 12 * m_calendar.get(Calendar.YEAR) + m_calendar.get(Calendar.MONTH);
-        m_calendar.setTime(d2);
-        int nMonth2 = 12 * m_calendar.get(Calendar.YEAR) + m_calendar.get(Calendar.MONTH);
-        return java.lang.Math.abs(nMonth2 - nMonth1);
+        return Math.round(totalLateFee * 100.0) / 100.0;
     }
 }

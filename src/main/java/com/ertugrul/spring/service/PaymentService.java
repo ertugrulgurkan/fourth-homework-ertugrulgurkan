@@ -85,7 +85,7 @@ public class PaymentService {
         double lateFeeDebt = 0;
 
         if (debt.getExpiryDate().before(paymentDto.getPaymentDate())) {
-            lateFeeDebt = calculateLateFeeDebt(debt);
+            lateFeeDebt = Constant.calculateLateFee(debt.getTotalAmount(), debt.getExpiryDate());
             Debt lateFeeD = buildLateFeeDebt(user, lateFeeDebt);
             debtEntityService.save(lateFeeD);
         }
@@ -138,8 +138,4 @@ public class PaymentService {
         debtEntityService.save(debt);
     }
 
-    private double calculateLateFeeDebt(Debt debt) {
-        long months = Constant.monthsBetween(new Date(), debt.getExpiryDate());
-        return Math.round(debt.getTotalAmount() * months * Constant.getLateFeeRate(debt.getExpiryDate()) / 100);
-    }
 }

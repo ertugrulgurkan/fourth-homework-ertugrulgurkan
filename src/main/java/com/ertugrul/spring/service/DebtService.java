@@ -130,8 +130,7 @@ public class DebtService {
         double overDueDebtDto = 0.0;
         List<DebtDto> debtDtoList = listAllUserOverdueDebtByUserId(userId);
         for (DebtDto dto : debtDtoList) {
-            long months = Constant.monthsBetween(new Date(), dto.getExpiryDate());
-            overDueDebtDto += Math.round(dto.getTotalAmount() * months * Constant.getLateFeeRate(dto.getExpiryDate()) / 100);
+            overDueDebtDto += Constant.calculateLateFee(dto.getTotalAmount(),dto.getExpiryDate());;
         }
         return new OverdueDebtDto(userId, overDueDebtDto);
     }
