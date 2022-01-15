@@ -1,9 +1,7 @@
 package com.ertugrul.spring.service;
 
 
-import com.ertugrul.spring.converter.DebtMapper;
 import com.ertugrul.spring.converter.PaymentMapper;
-import com.ertugrul.spring.dto.DebtDto;
 import com.ertugrul.spring.dto.PaymentDto;
 import com.ertugrul.spring.entity.Debt;
 import com.ertugrul.spring.entity.Payment;
@@ -24,7 +22,6 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +31,7 @@ public class PaymentService {
     private final PaymentEntityService paymentEntityService;
     private final DebtEntityService debtEntityService;
 
+    //Tüm tahsilatları getirir
     public List<PaymentDto> findAll() {
 
         List<Payment> paymentList = paymentEntityService.findAll();
@@ -41,6 +39,7 @@ public class PaymentService {
         return PaymentMapper.INSTANCE.convertAllPaymentToPaymentDto(paymentList);
     }
 
+    //idye göre tahsilat getirir
     public PaymentDto findById(Long id) {
 
         Optional<Payment> optionalPayment = paymentEntityService.findById(id);
@@ -55,6 +54,7 @@ public class PaymentService {
         return PaymentMapper.INSTANCE.convertPaymentDtoToPayment(payment);
     }
 
+    //idye göre tahsilatı siler
     @Transactional
     public void delete(Long id) {
 
@@ -63,6 +63,7 @@ public class PaymentService {
         paymentEntityService.delete(payment);
     }
 
+    //idye göre tahsilatı bulur
     private Payment findPaymentById(Long id) {
         Optional<Payment> optionalPayment = paymentEntityService.findById(id);
 
@@ -150,7 +151,7 @@ public class PaymentService {
     }
 
     private double calculateLateFeeDebt(Debt debt) {
-        long months = Constant.monthsBetween(new Date(),debt.getExpiryDate());
+        long months = Constant.monthsBetween(new Date(), debt.getExpiryDate());
         return Math.round(debt.getTotalAmount() * months * Constant.getLateFeeRate(debt.getExpiryDate()) / 100);
     }
 }

@@ -20,7 +20,6 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -79,7 +78,7 @@ public class DebtService {
         Optional<User> user = userEntityService.findById(debtDto.getUserId());
 
         if (user.isPresent()) {
-            if(debt.getType() == DebtType.LATE_FEE)
+            if (debt.getType() == DebtType.LATE_FEE)
                 throw new DebtTypeException("Late Fee type cannot be saved.");
             debt.setRemainingAmount(debt.getTotalAmount()); //kalan tutar ilk seferde ana borc tutarına eşittir
             Debt savedDebt = debtEntityService.save(debt);
@@ -147,7 +146,7 @@ public class DebtService {
         double overDueDebtDto = 0.0;
         List<DebtDto> debtDtoList = listAllUserOverdueDebtByUserId(userId);
         for (DebtDto dto : debtDtoList) {
-            long months = Constant.monthsBetween(new Date(),dto.getExpiryDate());
+            long months = Constant.monthsBetween(new Date(), dto.getExpiryDate());
             overDueDebtDto += Math.round(dto.getTotalAmount() * months * Constant.getLateFeeRate(dto.getExpiryDate()) / 100);
         }
         return new OverdueDebtDto(userId, overDueDebtDto);
