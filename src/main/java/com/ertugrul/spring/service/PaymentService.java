@@ -30,6 +30,7 @@ public class PaymentService {
     private final UserEntityService userEntityService;
     private final PaymentEntityService paymentEntityService;
     private final DebtEntityService debtEntityService;
+    private final ValidationService validationService;
 
     //Tüm tahsilatları getirir
     public List<PaymentDto> findAll() {
@@ -44,12 +45,7 @@ public class PaymentService {
 
         Optional<Payment> optionalPayment = paymentEntityService.findById(id);
 
-        Payment payment;
-        if (optionalPayment.isPresent()) {
-            payment = optionalPayment.get();
-        } else {
-            throw new PaymentNotFoundException("Payment not found!");
-        }
+        Payment payment = validationService.validatePayment(optionalPayment);
 
         return PaymentMapper.INSTANCE.convertPaymentDtoToPayment(payment);
     }
@@ -67,27 +63,19 @@ public class PaymentService {
     private Payment findPaymentById(Long id) {
         Optional<Payment> optionalPayment = paymentEntityService.findById(id);
 
-        Payment payment;
-        if (optionalPayment.isPresent()) {
-            payment = optionalPayment.get();
-        } else {
-            throw new PaymentNotFoundException("Payment not found!");
-        }
-        return payment;
+        return validationService.validatePayment(optionalPayment);
     }
 
     //a. Tahsilat yapan operasyon
     @Transactional
     public PaymentDto save(PaymentDto paymentDto) {
         Optional<User> userOptional = userEntityService.findById(paymentDto.getUserId());
-        if (userOptional.isEmpty())
-            throw new UserNotFoundException("User not found.");
+        User user = validationService.validateUser(userOptional);
+
         Optional<Debt> debtOptional = debtEntityService.findById(paymentDto.getDebtId());
-        if (debtOptional.isEmpty())
-            throw new DebtNotFoundException("Debt not found.");
+        Debt debt = validationService.validateDebt(debtOptional);
+
         PaymentDto savedPaymentDto = null;
-        Debt debt = debtOptional.get();
-        User user = userOptional.get();
 
         Payment payment = PaymentMapper.INSTANCE.convertPaymentDtoToPayment(paymentDto);
 
@@ -101,6 +89,7 @@ public class PaymentService {
             Debt lateFeeD = buildLateFeeDebt(user, lateFeeDebt);
             debtEntityService.save(lateFeeD);
         }
+
         updateCurrentDebt(debt);
 
         payment.setTotalDebtAmount(lateFeeDebt + debt.getTotalAmount());
@@ -113,10 +102,9 @@ public class PaymentService {
     public List<PaymentDto> listDebtsByDateRange(Date startDate, Date endDate) {
         Optional<List<Payment>> paymentListOptional = paymentEntityService.findAllPaymentByPaymentDateBetween(startDate, endDate);
 
-        if (paymentListOptional.isPresent())
-            return PaymentMapper.INSTANCE.convertAllPaymentToPaymentDto(paymentListOptional.get());
-        else
-            throw new PaymentNotFoundException("No Payment has been found.");
+        List<Payment> payments = validationService.validatePaymentList(paymentListOptional);
+
+        return PaymentMapper.INSTANCE.convertAllPaymentToPaymentDto(payments);
     }
 
     //c. Kullanıcının tüm tahsilatları listelenebilmelidir.

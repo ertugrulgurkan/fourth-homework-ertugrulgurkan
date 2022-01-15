@@ -16,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserEntityService userEntityService;
+    private final ValidationService validationService;
 
     public List<UserDto> findAll() {
 
@@ -28,24 +29,18 @@ public class UserService {
 
         Optional<User> optionalUser = userEntityService.findById(id);
 
-        User user;
-        if (optionalUser.isPresent()) {
-            user = optionalUser.get();
-        } else {
-            throw new UserNotFoundException("User not found!");
-        }
+        User user = validationService.validateUser(optionalUser);
+
         return UserMapper.INSTANCE.convertUserDtoToUser(user);
     }
 
     public UserDto findByUsername(String username) {
 
-        User user = userEntityService.findByUsername(username);
+        Optional<User> user = userEntityService.findByUsername(username);
 
-        if (user == null) {
-            throw new RuntimeException("User not found!");
-        }
+        User validatedUser = validationService.validateUser(user);
 
-        return UserMapper.INSTANCE.convertUserDtoToUser(user);
+        return UserMapper.INSTANCE.convertUserDtoToUser(validatedUser);
     }
 
     @Transactional
@@ -69,12 +64,8 @@ public class UserService {
     private User findUserById(Long id) {
         Optional<User> optionalUser = userEntityService.findById(id);
 
-        User user;
-        if (optionalUser.isPresent()) {
-            user = optionalUser.get();
-        } else {
-            throw new UserNotFoundException("User not found!");
-        }
-        return user;
+        return validationService.validateUser(optionalUser);
     }
+
+
 }
